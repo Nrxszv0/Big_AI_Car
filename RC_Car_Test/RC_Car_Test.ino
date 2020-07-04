@@ -14,15 +14,18 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-//  ser.write(115);
-//  delay(500);
-//  ser.write(50);
-//  delay(500);
+  //  ser.write(115);
+  //  delay(1000);
+  //  ser.write(50);
+  //  delay(1000);
   esc.write(100);
-  delay(500);
+  delay(1000);
   esc.write(0);
+  delay(1000);
   ser.write(70);
-  delay(500);
-  esc.write(100);
-
+  delay(1000);
+  ser.write(100);
+  delay(1000);
+  esc.write(80);
+  delay(1000);
 }
