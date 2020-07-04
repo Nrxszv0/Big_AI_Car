@@ -9,18 +9,14 @@ void setup() {
 Serial.begin(9600);
 ser.attach(serPin);
 esc.attach(escPin);
-//esc.write(startEscSpeed);
-//delay(30);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-//ser.write(serVal);
-//esc.write(90);
-ser.write(115);
-//delay(500);
-//ser.write(100);
-//delay(500);
+  ser.write(115);
+delay(500);
+ser.write(50);
+delay(500);
 //esc.write(0);
 //esc.write(0);
 //delay(10000);
