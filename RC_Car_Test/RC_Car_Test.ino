@@ -2,6 +2,7 @@
 int serPin = 7, serVal = 115; //30, 115
 int escPin = 6, escVal = 10; //95 150?
 int startEscSpeed = 110;
+int dly = 1000;
 Servo ser;
 Servo esc;
 void setup() {
@@ -14,18 +15,18 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //  ser.write(115);
-  //  delay(1000);
-  //  ser.write(50);
-  //  delay(1000);
-  esc.write(100);
-  delay(1000);
-  esc.write(0);
-  delay(1000);
-  ser.write(70);
-  delay(1000);
-  ser.write(100);
-  delay(1000);
-  esc.write(80);
-  delay(1000);
+  esc.write(85);
+  ser.write(40);
+  delay(dly);
+  esc.write(70);
+  ser.write(115);
+  delay(3*dly);
+  
+//esc.write(120);
+//Serial.println("Car on");
+//delay(3000);
+//esc.write(0);
+//Serial.println("Car off");
+//delay(3000);
+  
 }
