@@ -15,6 +15,7 @@ Servo ser2;
 int echoPin = 9, trigPin = 8;
 int ssDly = 2, sDly = 100;
 float distanceIn;
+float distance;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -22,28 +23,36 @@ void setup() {
   esc.attach(escPin);
   ser1.attach(serPin1);
   ser2.attach(serPin2);
-  ser1.write(140); // 0 = Forward 90 = Left 180 =Back
-  ser2.write(40); // 180 = Forward 90 = Right 0 = Back
+  ser1.write(85); // 0 = Forward 90 = Left 180 =Back // 85
+  ser2.write(105); // 180 = Forward 90 = Right 0 = Back // 105
   pinMode(echoPin, INPUT);
   pinMode(trigPin, OUTPUT);
 }
 
 void loop() {
+
+  //  delay(dly);
   for ( int i = minAng; i <= maxAng; i++) {
     ser1.write(i);
     ser2.write(minAng2 - i);
-    Serial.print(i);
-    Serial.print("    ");
-    Serial.println(minAng2 - i);
+    distance = distanceTest();
+    distance = constrain(distance, 0.5, 30);
+    Serial.println(distance);
+    //    Serial.print(i);
+    //    Serial.print("    ");
+    //    Serial.println(minAng2 - i);
     delay(dly);
   }
   delay(500);
   for ( int i = maxAng; i >= 0; i--) {
     ser1.write(i);
     ser2.write(minAng2 - i);
-    Serial.print(i);
-    Serial.print("    ");
-    Serial.println(minAng2 - i);
+    distance = distanceTest();
+    distance = constrain(distance, 0.5, 30);
+    Serial.println(distance);
+    //    Serial.print(i);
+    //    Serial.print("    ");
+    //    Serial.println(minAng2 - i);
     delay(dly);
   }
   delay(500);
