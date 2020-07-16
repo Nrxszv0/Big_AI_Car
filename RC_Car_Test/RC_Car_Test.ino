@@ -5,17 +5,17 @@ int startEscSpeed = 110;
 int serPin1 = 4, serVal1;
 int serPin2 = 5, serVal2;
 int minAng = 0, maxAng = 140, minAng2 = 180, maxAng2 = 40;
-int dly = 15;
+int dly = 10, bDly = 250;
 String angMsg = "Angle ", angMsg2 = ": ";
 Servo ser;
 Servo esc;
 Servo ser1;
 Servo ser2;
 
-int echoPin = 9, trigPin = 8;
-int ssDly = 2, sDly = 100;
+int echoPin1 = 9, trigPin1 = 8, echoPin2 = 11, trigPin2 = 10 ;
+int ssDly = 2, sDly = 20;
 float distanceIn;
-float distance;
+float distance1, distance2;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -25,8 +25,10 @@ void setup() {
   ser2.attach(serPin2);
   ser1.write(85); // 0 = Forward 90 = Left 180 =Back // 85
   ser2.write(105); // 180 = Forward 90 = Right 0 = Back // 105
-  pinMode(echoPin, INPUT);
-  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin1, INPUT);
+  pinMode(trigPin1, OUTPUT);
+  pinMode(echoPin2, INPUT);
+  pinMode(trigPin2, OUTPUT);
 }
 
 void loop() {
@@ -35,27 +37,35 @@ void loop() {
   for ( int i = minAng; i <= maxAng; i++) {
     ser1.write(i);
     ser2.write(minAng2 - i);
-    distance = distanceTest();
-    distance = constrain(distance, 0.5, 30);
-    Serial.println(distance);
+    distance1 = distanceTest(trigPin1, echoPin1);
+    distance1 = constrain(distance1, 0.5, 30);
+    distance2 = distanceTest(trigPin2, echoPin2);
+    distance2 = constrain(distance2, 0.5, 30);
+    Serial.print(distance1);
+    Serial.print("    ");
+    Serial.println(distance2);
     //    Serial.print(i);
     //    Serial.print("    ");
     //    Serial.println(minAng2 - i);
     delay(dly);
   }
-  delay(500);
+  delay(bDly);
   for ( int i = maxAng; i >= 0; i--) {
     ser1.write(i);
     ser2.write(minAng2 - i);
-    distance = distanceTest();
-    distance = constrain(distance, 0.5, 30);
-    Serial.println(distance);
+    distance1 = distanceTest(trigPin1, echoPin1);
+    distance1 = constrain(distance1, 0.5, 30);
+    distance2 = distanceTest(trigPin2, echoPin2);
+    distance2 = constrain(distance2, 0.5, 30);
+    Serial.print(distance1);
+    Serial.print("    ");
+    Serial.println(distance2);
     //    Serial.print(i);
     //    Serial.print("    ");
     //    Serial.println(minAng2 - i);
     delay(dly);
   }
-  delay(500);
+  delay(bDly);
 
 
 
@@ -80,7 +90,7 @@ void loop() {
   //delay(3000);
 
 }
-float distanceTest() {
+float distanceTest(int trigPin, int echoPin) {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(ssDly);
   digitalWrite(trigPin, HIGH);
