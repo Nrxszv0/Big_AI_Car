@@ -1,12 +1,12 @@
 #include <Servo.h>
-int serPin = 7, serVal = 115; //30, 115
-int escPin = 6, escVal = 10; //95 150?.  //Around 70 = Stop. 80+ = Forwards(81 = slowest moving speed. 110+ = fastest speed). 65- = Backwards (anything below 55 is top reverse speed)
+int serPin = 13, serVal = 115; //50, 115
+int escPin = 12, escVal = 10; //95 150?.  //Around 70 = Stop. 80+ = Forwards(81 = slowest moving speed. 110+ = fastest speed). 65- = Backwards (anything below 55 is top reverse speed)
 int startEscSpeed = 110;
 int stopVal = 90;
-int forwardSpeed = 112, reverseSpeed = 55;
+int forwardSpeed = 102, reverseSpeed = 83;
 int serPin1 = 4, serVal1;
 int serPin2 = 5, serVal2;
-int minAng = 0, maxAng = 140, minAng2 = 180, maxAng2 = 40, maxLeftAngle = 0, middleAngle = 90, maxRightAngle = 180;
+int minAng = 0, maxAng = 140, minAng2 = 180, maxAng2 = 40, maxSerLeftAngle = 51, middleSerAngle = 90, maxSerRightAngle = 113;
 int dly = 10, bDly = 250;
 String angMsg = "Angle ", angMsg2 = ": ";
 Servo ser;
@@ -14,11 +14,12 @@ Servo esc;
 Servo ultraSer1;
 Servo ultraSer2;
 
-int echoPin1 = 9, trigPin1 = 8, echoPin2 = 11, trigPin2 = 10 ;
+int echoPin1 = 4, trigPin1 = 5, echoPin2 = 3, trigPin2 = 2 ;
 int ssDly = 2, sDly = 20;
 float distanceIn;
-float leftDistance, rightDistance;
+float leftDistance, rightDistance, bucket, avgDistance;
 float minDistance = 0, maxDistance = 40, reverseDistance = 4.5, turnDistance = 15;
+int j, numMeas = 30;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -32,27 +33,31 @@ void setup() {
   pinMode(trigPin1, OUTPUT);
   pinMode(echoPin2, INPUT);
   pinMode(trigPin2, OUTPUT);
-  ser.write(middleAngle);
+  ser.write(90);
 }
 
 void loop() {
-//  esc.write(reverseSpeed);
-//  delay(1000);
-//  esc.write(90);
-//  delay(9790709079);
+  //  esc.write(forwardSpeed);
+  //  delay(1500);
+  //  esc.write(90);
+  //  delay(9790709079);
   getDistances();
   driveCar();
   delay(100);
-
 }
 float distanceTest(int trigPin, int echoPin) {
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(ssDly);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(sDly);
-  digitalWrite(trigPin, LOW);
-  distanceIn = pulseIn(echoPin, HIGH) / 148.0;
-  return distanceIn;
+  for (j = 0; j <= numMeas; j++) {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(ssDly);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(sDly);
+    digitalWrite(trigPin, LOW);
+    distanceIn = pulseIn(echoPin, HIGH) / 148.0;
+    bucket += distanceIn;
+  }
+  avgDistance = bucket / numMeas;
+  bucket = 0;
+  return avgDistance;
 }
 void moveServos() {
   for ( int i = minAng; i <= maxAng; i++) {
@@ -81,20 +86,20 @@ void getDistances() {
   Serial.print("\t\t");
 }
 void stop() {
-  esc.write(stopVal);
+  //  esc.write(stopVal);
 }
 void forward() {
-  esc.write(forwardSpeed);
-  ser.write(middleAngle);
+  //  esc.write(forwardSpeed);
+  ser.write(middleSerAngle);
   Serial.println("Driving Forward");
 }
 void reverse() {
-  esc.write(65);
-  ser.write(middleAngle);
+  //  esc.write(reverseSpeed);
+  //  ser.write(middleAngle);
   Serial.println("Reversing");
 }
 void turnLeft() {
-  serVal = map(rightDistance, minDistance, turnDistance, maxLeftAngle, middleAngle);
+  serVal = map(rightDistance, minDistance, turnDistance, maxSerLeftAngle, middleSerAngle);
   Serial.print(rightDistance);
   //  Serial.print(leftDistance);
   Serial.print(",");
@@ -102,9 +107,9 @@ void turnLeft() {
   Serial.print(",");
   Serial.print(turnDistance);
   Serial.print(",");
-  Serial.print(maxLeftAngle);
+  Serial.print(maxSerLeftAngle);
   Serial.print(",");
-  Serial.print(middleAngle);
+  Serial.print(middleSerAngle);
   Serial.print("     ");
   Serial.print("turningLeft");
   Serial.print("    ");
@@ -112,7 +117,7 @@ void turnLeft() {
   ser.write(serVal);
 }
 void turnRight() {
-  serVal = map(leftDistance, minDistance, turnDistance, maxRightAngle, middleAngle);
+  serVal = map(leftDistance, minDistance, turnDistance, maxSerRightAngle, middleSerAngle);
   Serial.print(leftDistance);
   //  Serial.print(rightDistance);
   Serial.print(",");
@@ -120,9 +125,9 @@ void turnRight() {
   Serial.print(",");
   Serial.print(turnDistance);
   Serial.print(",");
-  Serial.print(maxRightAngle);
+  Serial.print(maxSerRightAngle);
   Serial.print(",");
-  Serial.print(middleAngle);
+  Serial.print(middleSerAngle);
   Serial.print("     ");
   Serial.print("turningRight");
   Serial.print("    ");
