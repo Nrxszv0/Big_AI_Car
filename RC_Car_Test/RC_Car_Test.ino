@@ -1,9 +1,9 @@
 #include <Servo.h>
 int serPin = 13, serVal = 115; //50, 115
 int escPin = 12, escVal = 10; //95 150?.  //Around 70 = Stop. 80+ = Forwards(81 = slowest moving speed. 110+ = fastest speed). 65- = Backwards (anything below 55 is top reverse speed)
-int startEscSpeed = 110;
+int startEscSpeed = 100;
 int stopVal = 90;
-int forwardSpeed = 102, reverseSpeed = 83;
+int forwardSpeed = 107, reverseSpeed = 83;
 int serPin1 = 4, serVal1;
 int serPin2 = 5, serVal2;
 int minAng = 0, maxAng = 140, minAng2 = 180, maxAng2 = 40, maxSerLeftAngle = 51, middleSerAngle = 90, maxSerRightAngle = 113;
@@ -18,7 +18,7 @@ int echoPin1 = 4, trigPin1 = 5, echoPin2 = 3, trigPin2 = 2 ;
 int ssDly = 2, sDly = 20;
 float distanceIn;
 float leftDistance, rightDistance, bucket, avgDistance;
-float minDistance = 0, maxDistance = 40, reverseDistance = 4.5, turnDistance = 15;
+float minDistance = 4, maxDistance = 40, reverseDistance = 4.5, turnDistance = 17;
 int j, numMeas = 30;
 void setup() {
   // put your setup code here, to run once:
@@ -34,6 +34,9 @@ void setup() {
   pinMode(echoPin2, INPUT);
   pinMode(trigPin2, OUTPUT);
   ser.write(90);
+//  esc.write(startEscSpeed);
+//  delay(10);
+  esc.write(forwardSpeed);
 }
 
 void loop() {
@@ -86,16 +89,16 @@ void getDistances() {
   Serial.print("\t\t");
 }
 void stop() {
-  //  esc.write(stopVal);
+  esc.write(stopVal);
 }
 void forward() {
-  //  esc.write(forwardSpeed);
+  esc.write(forwardSpeed);
   ser.write(middleSerAngle);
   Serial.println("Driving Forward");
 }
 void reverse() {
-  //  esc.write(reverseSpeed);
-  //  ser.write(middleAngle);
+  esc.write(reverseSpeed);
+  ser.write(middleSerAngle);
   Serial.println("Reversing");
 }
 void turnLeft() {
